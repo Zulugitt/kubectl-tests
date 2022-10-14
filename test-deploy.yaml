@@ -1,0 +1,40 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata: 
+  name: test-deploy
+  labels:
+    app: kube-service
+    env: test-depl
+spec:
+  replicas: 3
+  selector: 
+    matchLabels: 
+      project: mm
+    template:
+      metadata:
+        labels:
+          project: mm
+      spec:
+        containers: 
+          - name: mm-test
+            image: nginx:latest
+            ports:
+              - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: single-service
+  labels: 
+    env: prod
+    owner: Alex
+spec:
+  selector:
+     labels: 
+       project: mm
+     ports:
+       - name:  app-nginx
+         protocol:  TCP
+         port: 80
+         targetPort: 80
+     type: LoadBalancer
